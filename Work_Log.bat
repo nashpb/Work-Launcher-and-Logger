@@ -1,14 +1,9 @@
 @set _start=%time%
 @cls
 @echo OFF
-echo **           **  * *
-echo  **         **   * *
-echo   **  ***  **    * *
-echo    **** ****     * ******
-echo     **   **      ********
-set STARTTIME=%_start%
-set "_ver=v0.4.2"
+set "_ver=v0.4.8"
 title Work Logger %_ver%
+call :logo
 set "_log=C:\Users\Nishadh\OneDrive\Work_Log\worklog.log
 set "_err1=C:\Users\Nishadh\Documents\Work\work_error.log"
 set "log=call :log"
@@ -17,12 +12,50 @@ taskkill /FI "WINDOWTITLE eq worklog.log - Notepad" >nul 2>&1
 %log% Log from Work Logger %_ver%
 %log% Date of Work: %date%
 %log% Work started from: %STARTTIME%
-start  C:\"Program Files"\Google\Chrome\Application\chrome.exe & %log% %time%:- Chrome launched
-start C:\wamp\wampmanager.exe & %log% %time%:- WAMP launched
-cd "C:\Program Files\NetBeans 8.2\bin\"
-netbeans.exe --console suppress & %log% %time%:- Netbeans launched
-cd c:\Users\Nishadh\Desktop
-pause
+rem start  C:\"Program Files"\Google\Chrome\Application\chrome.exe & %log% %time%:- Chrome launched
+rem start C:\wamp\wampmanager.exe & %log% %time%:- WAMP launched
+rem cd "C:\Program Files\NetBeans 8.2\bin\"
+rem netbeans.exe --console suppress & %log% %time%:- Netbeans launched
+rem cd c:\Users\Nishadh\Desktop
+call :opt
+%log% -------------------------------
+goto :eof
+
+:logo
+echo **           **  * *
+echo  **         **   * *
+echo   **  ***  **    * *
+echo    **** ****     * ******
+echo     **   **      ********
+goto :eof
+
+:log
+REM writes the same line to screen and two files
+>>%_log% echo(%*
+>>%_err1% echo(%*
+goto :eof
+
+
+:opt
+set /P "_opt=Enter choice [break/stop]"
+if %_opt%==stop (
+call :stop
+)else if %_opt%==break (
+call :break
+)else (
+echo Wrong Choice
+cls
+call :logo
+call :opt
+)
+goto :eof
+
+:break
+echo Taking a Break
+goto :eof
+
+:stop
+set STARTTIME=%_start%
 set _end=%time%
 set ENDTIME=%_end%
 set /A STARTTIME=(1%STARTTIME:~0,2%-100)*360000 + (1%STARTTIME:~3,2%-100)*6000 + (1%STARTTIME:~6,2%-100)*100 + (1%STARTTIME:~9,2%-100)
@@ -52,12 +85,4 @@ echo ENDTIME: %_end%
 echo DURATION: %DURATIONH%:%DURATIONM%:%DURATIONS%:%DURATIONHS%
 %log% Work ended at: %_end%
 %log% Work Duration: %DURATIONH%:%DURATIONM%:%DURATIONS%:%DURATIONHS%
-%log% -------------------------------
-goto :eof
-
-
-:log
-REM writes the same line to screen and two files
->>%_log% echo(%*
->>%_err1% echo(%*
 goto :eof
