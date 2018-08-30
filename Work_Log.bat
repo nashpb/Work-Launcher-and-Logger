@@ -4,14 +4,14 @@
 set "_ver=v0.4.8"
 title Work Logger %_ver%
 call :logo
-set "_log=C:\Users\Nishadh\OneDrive\Work_Log\worklog.log
+set "_log=C:\Users\Nishadh\OneDrive\Work_Log\worklog.log"
 set "_err1=C:\Users\Nishadh\Documents\Work\work_error.log"
 set "log=call :log"
 taskkill /FI "WINDOWTITLE eq worklog.log - Notepad" >nul 2>&1
 %log% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %log% Log from Work Logger %_ver%
 %log% Date of Work: %date%
-%log% Work started from: %STARTTIME%
+%log% Work started from: %_start%
 rem start  C:\"Program Files"\Google\Chrome\Application\chrome.exe & %log% %time%:- Chrome launched
 rem start C:\wamp\wampmanager.exe & %log% %time%:- WAMP launched
 rem cd "C:\Program Files\NetBeans 8.2\bin\"
@@ -52,6 +52,7 @@ goto :eof
 
 :break
 echo Taking a Break
+
 goto :eof
 
 :stop
