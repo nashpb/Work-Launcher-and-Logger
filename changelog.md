@@ -2,7 +2,7 @@ Changelog 0.5.2
 View the log file
 Added a Menu 
 Changes in file extension (.bat->.cmd)
-Changes in logo
+Changes in logo and file name
 
 
 Changelog 0.5.1
