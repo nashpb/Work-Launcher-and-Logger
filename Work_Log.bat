@@ -1,13 +1,14 @@
 @set _start=%time%
 @cls
 @echo OFF
-set "_ver=v0.4.8"
+set "_ver=v0.5.1"
+set "_btime=0"
+set "_bcount=0"
 title Work Logger %_ver%
-call :logo
 set "_log=C:\Users\Nishadh\OneDrive\Work_Log\worklog.log"
 set "_err1=C:\Users\Nishadh\Documents\Work\work_error.log"
 set "log=call :log"
-taskkill /FI "WINDOWTITLE eq worklog.log - Notepad" >nul 2>&1
+taskkill /FI "WINDOWTITLE eq worklog.log *" >nul 2>&1
 %log% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %log% Log from Work Logger %_ver%
 %log% Date of Work: %date%
@@ -37,42 +38,84 @@ goto :eof
 
 
 :opt
+cls
+call :logo
 set /P "_opt=Enter choice [break/stop]"
 if %_opt%==stop (
 call :stop
 )else if %_opt%==break (
-call :break
+set /A "_bcount+=1"
+call :break_on
 )else (
 echo Wrong Choice
-cls
-call :logo
 call :opt
 )
 goto :eof
 
-:break
-echo Taking a Break
+:break_on
+set "_break_on=%time%"
+echo Break %_bcount% taken at %_break_on%
+%log% Break %_bcount% taken at %_break_on%
+call :chkbreak 
+goto :eof
 
+:chkbreak
+set /P "_chk=Are you back from your break?[y/n]"
+if %_chk%==y (
+call :break_off
+)else (
+cls
+call :logo
+call :chkbreak
+)
+goto :eof
+
+:break_off
+set "_break_off=%time%"
+echo Back from break %_bcount% at %_break_off%
+%log% Back from break %_bcount% at %_break_off%
+call :conv %_break_on%,bon
+call :conv %_break_off%,bof
+set /A "_bt=(%bof%-%bon%)"
+set /A "_btime+=_bt"
+call :vnoc %_bt%,h,m,s,ms
+if %h% LSS 10 set h=0%h%
+if %m% LSS 10 set m=0%m%
+if %s% LSS 10 set s=0%s%
+if %ms% LSS 10 set ms=0%ms%
+%log% Break %_bcount% Duration %h%:%m%:%s%.%ms%
+echo Break %_bcount% Duration %h%:%m%:%s%.%ms%
+pause
+call :opt
+goto :eof
+
+:conv 
+set "MTIME=%~1"
+set /A MTIME=(1%MTIME:~0,2%-100)*360000 + (1%MTIME:~3,2%-100)*6000 + (1%MTIME:~6,2%-100)*100 + (1%MTIME:~9,2%-100)
+set "%~2=%MTIME%"
+goto :eof
+
+:vnoc
+set "DURATION=%~1"
+set /A %~2=%DURATION% / 360000
+set /A %~3=(%DURATION% - %~2*360000) / 6000
+set /A %~4=(%DURATION% - %~2*360000 - %~3*6000) / 100
+set /A %~5=(%DURATION% - %~2*360000 - %~3*6000 - %~4*100)
 goto :eof
 
 :stop
-set STARTTIME=%_start%
 set _end=%time%
-set ENDTIME=%_end%
-set /A STARTTIME=(1%STARTTIME:~0,2%-100)*360000 + (1%STARTTIME:~3,2%-100)*6000 + (1%STARTTIME:~6,2%-100)*100 + (1%STARTTIME:~9,2%-100)
-set /A ENDTIME=(1%ENDTIME:~0,2%-100)*360000 + (1%ENDTIME:~3,2%-100)*6000 + (1%ENDTIME:~6,2%-100)*100 + (1%ENDTIME:~9,2%-100)
+call :conv %_start%,STARTTIME
+call :conv %_end%,ENDTIME
 
 rem calculating the duration is easy
-set /A DURATION=%ENDTIME%-%STARTTIME%
+set /A DURATION=%ENDTIME%-%STARTTIME%-%_btime%
 
 rem we might have measured the time inbetween days
-if %ENDTIME% LSS %STARTTIME% set set /A DURATION=%STARTTIME%-%ENDTIME%
+if %ENDTIME% LSS %STARTTIME% set /A DURATION=%STARTTIME%-%ENDTIME%-%_btime%
 
 rem now break the centiseconds down to hors, minutes, seconds and the remaining centiseconds
-set /A DURATIONH=%DURATION% / 360000
-set /A DURATIONM=(%DURATION% - %DURATIONH%*360000) / 6000
-set /A DURATIONS=(%DURATION% - %DURATIONH%*360000 - %DURATIONM%*6000) / 100
-set /A DURATIONHS=(%DURATION% - %DURATIONH%*360000 - %DURATIONM%*6000 - %DURATIONS%*100)
+call :vnoc %DURATION%,DURATIONH,DURATIONM,DURATIONS,DURATIONHS
 
 rem some formatting
 if %DURATIONH% LSS 10 set DURATIONH=0%DURATIONH%
@@ -81,9 +124,16 @@ if %DURATIONS% LSS 10 set DURATIONS=0%DURATIONS%
 if %DURATIONHS% LSS 10 set DURATIONHS=0%DURATIONHS%
 
 rem outputing
+cls
+call :logo
 echo STARTTIME: %_start%
+call :vnoc %_btime%,h,m,s,ms
+echo Total Breaks Taken: %_bcount%
+echo BREAK DURATION: %h%:%m%:%s%.%ms% 
 echo ENDTIME: %_end%
-echo DURATION: %DURATIONH%:%DURATIONM%:%DURATIONS%:%DURATIONHS%
+echo DURATION: %DURATIONH%:%DURATIONM%:%DURATIONS%.%DURATIONHS%
+%log% Total Breaks Taken: %_bcount%
+%log% Total BREAK DURATION: %h%:%m%:%s%.%ms%
 %log% Work ended at: %_end%
-%log% Work Duration: %DURATIONH%:%DURATIONM%:%DURATIONS%:%DURATIONHS%
+%log% Work Duration: %DURATIONH%:%DURATIONM%:%DURATIONS%.%DURATIONHS%
 goto :eof
