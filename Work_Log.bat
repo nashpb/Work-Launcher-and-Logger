@@ -136,4 +136,5 @@ echo DURATION: %DURATIONH%:%DURATIONM%:%DURATIONS%.%DURATIONHS%
 %log% Total BREAK DURATION: %h%:%m%:%s%.%ms%
 %log% Work ended at: %_end%
 %log% Work Duration: %DURATIONH%:%DURATIONM%:%DURATIONS%.%DURATIONHS%
+pause
 goto :eof
