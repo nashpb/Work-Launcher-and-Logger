@@ -13,11 +13,11 @@ taskkill /FI "WINDOWTITLE eq worklog.log *" >nul 2>&1
 %log% Log from Work Logger %_ver%
 %log% Date of Work: %date%
 %log% Work started from: %_start%
-rem start  C:\"Program Files"\Google\Chrome\Application\chrome.exe & %log% %time%:- Chrome launched
-rem start C:\wamp\wampmanager.exe & %log% %time%:- WAMP launched
-rem cd "C:\Program Files\NetBeans 8.2\bin\"
-rem netbeans.exe --console suppress & %log% %time%:- Netbeans launched
-rem cd c:\Users\Nishadh\Desktop
+start  C:\"Program Files"\Google\Chrome\Application\chrome.exe & %log% %time%:- Chrome launched
+start C:\wamp\wampmanager.exe & %log% %time%:- WAMP launched
+cd "C:\Program Files\NetBeans 8.2\bin\"
+netbeans.exe --console suppress & %log% %time%:- Netbeans launched
+cd c:\Users\Nishadh\Desktop
 call :opt
 %log% -------------------------------
 goto :eof
