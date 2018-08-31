@@ -1,23 +1,47 @@
-@set _start=%time%
-@cls
 @echo OFF
-set "_ver=v0.5.1"
-set "_btime=0"
-set "_bcount=0"
+set "_ver=v0.5.2"
 title Work Logger %_ver%
 set "_log=C:\Users\Nishadh\OneDrive\Work_Log\worklog.log"
 set "_err1=C:\Users\Nishadh\Documents\Work\work_error.log"
+call :menu
+goto :eof
+
+:menu
+cls
+call :logo
+echo Welcome to WLL
+echo ``````Menu``````
+echo 1: Start Work
+echo 2: View Log
+echo 3: Exit
+set /P "chc=Enter choice:"
+if %chc%==1 (
+call :start
+)else if %chc%==2 (
+start notepad.exe C:\Users\Nishadh\OneDrive\Work_Log\worklog.log
+call :menu
+)else (
+exit
+)
+goto :eof
+
+
+:start
+@set _start=%time%
+@cls
+set "_btime=0"
+set "_bcount=0"
 set "log=call :log"
 taskkill /FI "WINDOWTITLE eq worklog.log *" >nul 2>&1
 %log% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %log% Log from Work Logger %_ver%
 %log% Date of Work: %date%
 %log% Work started from: %_start%
-start  C:\"Program Files"\Google\Chrome\Application\chrome.exe & %log% %time%:- Chrome launched
-start C:\wamp\wampmanager.exe & %log% %time%:- WAMP launched
 cd "C:\Program Files\NetBeans 8.2\bin\"
 netbeans.exe --console suppress & %log% %time%:- Netbeans launched
 cd c:\Users\Nishadh\Desktop
+start  C:\"Program Files"\Google\Chrome\Application\chrome.exe & %log% %time%:- Chrome launched
+start C:\wamp\wampmanager.exe & %log% %time%:- WAMP launched
 call :opt
 %log% -------------------------------
 goto :eof
@@ -137,4 +161,5 @@ echo DURATION: %DURATIONH%:%DURATIONM%:%DURATIONS%.%DURATIONHS%
 %log% Work ended at: %_end%
 %log% Work Duration: %DURATIONH%:%DURATIONM%:%DURATIONS%.%DURATIONHS%
 pause
+call :menu
 goto :eof
