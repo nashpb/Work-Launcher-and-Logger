@@ -38,7 +38,7 @@ taskkill /FI "WINDOWTITLE eq worklog.log *" >nul 2>&1
 %log% Date of Work: %date%
 %log% Work started from: %_start%
 cd "C:\Program Files\NetBeans 8.2\bin\"
-netbeans.exe --console suppress & %log% %time%:- Netbeans launched
+start netbeans.exe --console suppress & %log% %time%:- Netbeans launched
 cd c:\Users\Nishadh\Desktop
 start  C:\"Program Files"\Google\Chrome\Application\chrome.exe & %log% %time%:- Chrome launched
 start C:\wamp\wampmanager.exe & %log% %time%:- WAMP launched
